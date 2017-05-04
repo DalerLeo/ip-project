@@ -204,7 +204,7 @@ function passport_validation() {
 
 function birth_data_validator(){
 
-      var resp = /([0-3])?([0-9]){1}\/([0-1])?([0-9]){1}\/\d{4}/;
+      var resp = /([0-3])?([0-9]){1}\/([0-1])?([0-2]){1}\/\d{4}/;
       var check = resp.test($("#birth_date").val());
 
       if(check){

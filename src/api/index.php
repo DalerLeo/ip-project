@@ -15,6 +15,7 @@ $app->get('/hello/{name}', function (Request $request, Response $response) {
 });
 
 
+/*Checking wheather user with same passpoert No has been registered*/
 $app->post('/passport', function (Request $request, Response $response){
 
     $data = $request->getParsedBody();
@@ -31,6 +32,7 @@ $app->post('/passport', function (Request $request, Response $response){
         
       $stmt = $db_con->prepare("SELECT passport FROM siteUsers WHERE passport=$passport");
       $stmt->execute();
+      
       $data = $stmt->fetchAll();
       if(empty($data)){
         return $response->withJson(0);
