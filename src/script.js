@@ -13,6 +13,26 @@ $('document').ready(function()
   /*mail validation*/
   $("#email").on('input', email_validator);  
 
+
+  /*Add prescription by doctor*/
+
+  $("#add_history").click(function () {
+
+  var pres = $.("#prescription").val();    
+  var med = $.("#medicine").val();
+    $.post('api/illness_history', {
+      prescription: pres,
+      medicine: med
+    }, function (resp) {
+      
+      if(!resp){
+        alert(resp);
+      }
+
+    })
+
+  })
+
 /*Click function handler*/
   $("#sign_up_btn").click(function() {
     
