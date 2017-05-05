@@ -1,16 +1,16 @@
 <?php
 session_start();
-
-/*if(!isset($_SESSION['user_session']))
-{
- header("Location: login-ajax.html");
-}*/
-
 include_once 'dbConfig.php';
 
-$stmt = $db_con->prepare("SELECT * FROM siteUsers WHERE userID=:uid");
-$stmt->execute(array(":uid"=>$_SESSION['user_session']));
-$row=$stmt->fetch(PDO::FETCH_ASSOC);
+    if(isset($_SESSION['user_session']))
+  {
+
+
+  $stmt = $db_con->prepare("SELECT * FROM siteUsers WHERE userID=:uid");
+  $stmt->execute(array(":uid"=>$_SESSION['user_session']));
+  $row=$stmt->fetch(PDO::FETCH_ASSOC);
+
+  }
 
 ?>
 
@@ -88,18 +88,31 @@ $row=$stmt->fetch(PDO::FETCH_ASSOC);
       <!-- Three columns of text below the carousel -->
       <div class="row">
         <div class="col-lg-4">
-          <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
-          <h2><div>
-   <strong>Hello '<?php echo $row['userName']; ?></strong>  Welcome to the members page.
-    </div></h2>
-          <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <img class="img-circle" src="" alt="" width="140" height="140">
+          <h2>
+            <div>
+              <strong>Hello <?php if(isset($_SESSION['user_session'])){echo $row['email'];}else echo "No USER";  ?></strong>  Welcome to the members page.
+            </div>
+           </h2>
+          <p></p>
+          
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-          <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
-          <h2>Heading</h2>
-          <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          
+          <div class="form-group">
+            <input id="passport" type="text" class="form-control" placeholder="Passport No">
+          </div>
+          <div class="form-group">
+            <textarea id="pres" type="text" class="form-control" placeholder="Prescription"></textarea>
+          </div>
+          <div class="form-group">
+            <textarea id="medicine" type="text" class="form-control" placeholder="Medicine"></textarea>
+          </div>
+          <div class="form-group">
+            <input id="medicine_sub" type="button" class="form-control" value="Submit">
+          </div>
+
+
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
           <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
@@ -114,39 +127,9 @@ $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
       <hr class="featurette-divider">
 
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">First featurette heading. <span class="text-muted">It'll blow your mind.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5">
-          <img class="featurette-image img-responsive center-block" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
-        </div>
-      </div>
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7 col-md-push-5">
-          <h2 class="featurette-heading">Oh yeah, it's that good. <span class="text-muted">See for yourself.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5 col-md-pull-7">
-          <img class="featurette-image img-responsive center-block" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
-        </div>
-      </div>
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5">
-          <img class="featurette-image img-responsive center-block" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
-        </div>
-      </div>
+      
+      
+      
 
       <hr class="featurette-divider">
 

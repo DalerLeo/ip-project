@@ -16,10 +16,10 @@ $('document').ready(function()
 
   /*Add prescription by doctor*/
 
-  $("#add_history").click(function () {
+  $("#medicine_sub").click(function () {
 
-  var pres = $.("#prescription").val();    
-  var med = $.("#medicine").val();
+  var pres = $("#prescription").val();    
+  var med = $("#medicine").val();
     $.post('api/illness_history', {
       prescription: pres,
       medicine: med
@@ -105,7 +105,19 @@ $('document').ready(function()
 
   $("#signup").click(function(){
 
-    window.location.href = "register.html";
+//    window.location.href = "register.html";
+
+    $.post('logout.php', function(resp) {
+ 
+      if(resp){
+        alert("LOGGED OUT");
+        window.location.href = "home.php";
+      }
+      else{
+        alert("ERROR");
+      }
+    })
+
   });
 
 
@@ -149,7 +161,7 @@ $('document').ready(function()
    $.ajax({
     
    type : 'POST',
-   url  : 'api/signin',
+   url  : 'login.php',
    data : data,
    beforeSend: function()
    { 

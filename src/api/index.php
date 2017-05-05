@@ -89,6 +89,21 @@ $app->post('/signup', function(Request $request, Response $response){
 });
 
 
+$app->post('/logout', function(Request $request, Response $response){
+
+     session_start();
+     unset($_SESSION['user_session']);
+     
+     if(session_destroy())
+     {
+        return $response->withJson(1);
+     }
+     else{
+        return $response->withJson(0);
+     }
+
+});
+
 $app->post('/signin', function(Request $request, Response $response){
 
 	$data = $request->getParsedBody();
@@ -111,7 +126,7 @@ $app->post('/signin', function(Request $request, Response $response){
    
    if($row['password']==$user_password){
     
-    echo "ok"; // log in
+    echo "ko"; // log in
     $_SESSION['user_session'] = $row['userID'];
    }
    else{
