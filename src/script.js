@@ -18,11 +18,13 @@ $('document').ready(function()
 
   $("#medicine_sub").click(function () {
 
-  var pres = $("#prescription").val();    
+  var pres = $("#pres").val();    
   var med = $("#medicine").val();
+  var pass = $("#passport").val();
     $.post('api/illness_history', {
       prescription: pres,
-      medicine: med
+      medicine: med,
+      passport: pass
     }, function (resp) {
       
       if(!resp){
