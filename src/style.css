@@ -1,4 +1,4 @@
-body{
+/* body{
 	background: #ececec;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
@@ -20,7 +20,7 @@ h3{
 .btn-red:hover{
 	background: #ec4835;
 }
-/* =============================header============================== */
+=============================header==============================
 .menu-top .navbar{
 	margin-bottom: 0;
 	background: #fff;
@@ -200,7 +200,7 @@ h3{
 	display: none;
 }
 
-/*========================content=========================*/
+========================content=========================
 .main-slogan{
 	background: #fff;
 	text-align: center;
@@ -267,7 +267,7 @@ h3{
 }
 
 
-/* Large Devices, Wide Screens */
+Large Devices, Wide Screens
 @media only screen and (max-width : 1200px) {
 	.menu-top .navbar-nav,
 	.main-menu .navbar-nav{
@@ -277,7 +277,7 @@ h3{
 		left: 20%;
 	}
 	.main-menu .navbar-form{
-		/*margin-left: 125px;*/
+		margin-left: 125px;
 		background: rgba(0, 0, 0, 0.5);
 		margin: 0;
 		padding: 15px;
@@ -290,7 +290,7 @@ h3{
 	}
 }
 
-/* Medium Devices, Desktops */
+Medium Devices, Desktops
 @media only screen and (max-width : 992px) {
 	.menu-carousel .carousel-caption h1{
 		font-size: 40px;
@@ -308,7 +308,7 @@ h3{
 	}
 }
 
-/* Small Devices, Tablets */
+Small Devices, Tablets
 @media only screen and (max-width : 768px) {
 	.main-menu .container{
 		padding-left: 0;
@@ -366,7 +366,7 @@ h3{
 	}
 }
 
-/* Extra Small Devices, Phones */
+Extra Small Devices, Phones
 @media only screen and (max-width : 480px) {
 	.menu-carousel .carousel-caption .btn-red{
 		font-size: 14px;
@@ -380,4 +380,61 @@ h3{
 	.main-menu .navbar-form{
 		display: block !important;
 	}
+}
+
+#main_container{
+	margin: 20px !important;
+	max-width: 1200px;
+}
+
+.sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+}
+
+.navbar-dongle{
+    position: relative;
+    float: left;
+    padding: 9px 10px!important;
+    margin-top: 8px!important;
+    margin-right: 15px!important;
+    margin-bottom: 8px!important;
+    background-color: transparent!important;
+    background-image: none!important;
+    border: 1px solid transparent!important;
+    border-radius: 4px!important;
+    border-color: #333!important;
+}
+
+.nav-btn{
+	margin: 10px 3px 10px 3px!important;
+} */
+
+.glyphicon-ok {
+		color: green!important;
+	}
+
+#sign_up_form div label span .glyphicon-remove {
+	color: red!important;
+}
+
+.red{
+	color: red;
+}
+
+.black{
+	color: rgb(0, 0, 0);
+}
+
+.glyphicon-remove {
+		color: red!important;
 }

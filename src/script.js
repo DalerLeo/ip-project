@@ -5,14 +5,15 @@ $('document').ready(function()
   $("#password2").on('input', confirm_password);
 
   /*passport validation*/
-  $("#passport").on('input', passport_validation);
+  $("#sign_up_form #passport").on('input', passport_validation);
 
   /*Birth date handler*/
   $("#birth_date").on('input', birth_data_validator)
 
   /*mail validation*/
-  $("#email").on('input', email_validator);  
+  $("#email").on('focusout', email_validator);  
 
+  Fil();
 
   /*Add prescription by doctor*/
 
@@ -105,7 +106,7 @@ $('document').ready(function()
 
   /*redicrection to sign-up page*/
 
-  $("#signup").click(function(){
+  $("#sign_out").click(function(){
 
 //    window.location.href = "register.html";
 
@@ -122,7 +123,24 @@ $('document').ready(function()
 
   });
 
+/*Droopdown menu selected Doc */
+ $('#doctors a').click(function(){
+    $('#selectedDoc').text($(this).text());
+   
+  });
 
+
+ /*Droopdown menu selected Day */
+ $('#days a').click(function(){
+    $('#selectedDay').text($(this).text());
+
+  });
+
+ /*Droopdown menu selected Time */
+ $('#time a').click(function(){
+    $('#selectedTime').text($(this).text());
+
+  });
 
      /* validation  for sign-in*/
 
@@ -195,11 +213,13 @@ $('document').ready(function()
     /*password confirmation*/
 function confirm_password() {
 
-  if($("#password2").val()!==$("#password").val() && $("#password").val() ){
+  if($("#password2").val()!==$("#sign_up_form #password").val() && $("#sign_up_form #password").val() ){
+          console.log($("#password2").val() + "!==" + $("#sign_up_form #password").val());
           $("label[for=password2] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
           return false;
     }
     else{
+                  console.log($("#password2").val() + "==" + $("#password").val());
         $("label[for=password2] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
         return true;
     }
@@ -210,18 +230,18 @@ function confirm_password() {
 function passport_validation() {
 
   var input = /([a-zA-Z]){2}\d{6}/;
-  var pass = $("#passport").val();
+  var pass = $("#sign_up_form #passport").val();
   var check = input.test(pass);
   if(check){
 
     $.post('api/passport', { passport: pass } , function(resp) {
       
       if(!resp){
-            $("label[for=passport] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
+            $("#sign_up_form label[for=passport] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
                 return true;
       }
       else{
-        $("label[for=passport] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
+        $("#sign_up_form label[for=passport] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
         return false;
       }
 
@@ -254,7 +274,28 @@ function birth_data_validator(){
 
     function email_validator() {
       
-      var pattern = /.+@\w+\..+/
+
+      var access_key = 'f051a444428a379d9c2d557a995a4ad3';
+      var email_address = $("#email").val();
+
+      // verify email address via AJAX call
+      $.ajax({
+          url: 'http://apilayer.net/api/check?access_key=' + access_key + '&email=' + email_address,   
+          dataType: 'json',
+          success: function(resp) {
+
+            if(resp.format_valid){
+              $("label[for=email] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
+              return resp;              
+            }else{
+              $("label[for=email] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
+              return resp;
+      }
+                      
+          }
+      });
+
+      /*var pattern = /.+@\w+\..+/
       var check = pattern.test($("#email").val());
 
       if(check){
@@ -264,8 +305,9 @@ function birth_data_validator(){
       else{
         $("label[for=email] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
         return false;
+      }*/
       }
-    }
+
 
     $("#first_name").on('input', function() {
       
@@ -296,17 +338,34 @@ function birth_data_validator(){
       }
 
     });
+/*
+    $("#phone").on('focusout', function(){
+      
+      var access_key = 'f6de90ecfb7c829fdefb0f96c2152b17';
+      var phone_number = $(this).val();
 
-    $("#phone").on('input', function(){
-      if( $.isNumeric($(this).val()) ){
-        $("label[for=phone] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
-        return true;
-      }
-      else{
-        $("label[for=phone] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
-        return false;
-      }
-    });
+// verify email address via AJAX call
+      $.ajax({
+          url: 'http://apilayer.net/api/validate?access_key=' + access_key + '&number=' + phone_number,   
+          dataType: 'json',
+          success: function(json) {
+
+          // Access and use your preferred validation result objects
+          console.log(json.valid);
+          console.log(json.country_code);
+          console.log(json.carrier);
+            if(json.valid){
+              $("label[for=phone] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
+              
+            }else{
+              $("label[for=phone] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
+              
+            }          
+              return json.valid;
+          }
+      });
+
+    });*/
 
     $("#job_study").on('input', function(){
 
@@ -323,7 +382,7 @@ function birth_data_validator(){
     $("#password").on('input', function(){
 
       if($(this).val()){
-        $("label[for=password] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
+        $("label[for=password] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok').cs;
         return true;
       }
       else{
@@ -331,5 +390,206 @@ function birth_data_validator(){
         return false;
       }
     });
+
+/*Fill  booking time, date and doctors available dropdown on*/
+
+function Fil(){
+
+
+  var data = {
+    sec1: "10:00",
+    sec2: "11:00",
+    sec3: "12:00"
+  }
+
+  sec = [1, 1, 0, 1, 0, 1];
+  days = [12, 13, 14, 15];
+  docs = ["Gidor", "chidor", "xidor"];
+
+/*  var li = $("#time_menu>li");
+  var timeArray = [];
+  
+  li.each(function(index){
+    timeArray.push($(this).text() );
+  });*/
+
+  $.each(days, function(index, val) {
+    $("#days").append("<li><a>"+val+"-03-2017</a></li>")
+  });
+
+  $.each(docs, function(index, val) {
+    $("#doctors").append("<li><a>"+val+"</a></li>")   
+  });
+
+  $.each(sec, function (index, value) {
+      var exactTime=0;
+      
+      if (value) {
+        exactTime = index+9;
+        console.log(index);
+        $("#time").prepend("<li><a>"+exactTime+":00</a></li>");
+        }
+  });
+
+}
+/*Fill show booking time*/
+
+/*get booking time and go post it in data base*/
+
+$("#bookingBtn").click(function() {
+
+  var selectedDoc = $('#selectedDoc').text();
+  var selectedDay = $("#selectedDay").text();
+  var selectedTime = $("#selectedTime").text();
+
+
+  if (selectedTime=="Time") {
+      $("#bookingError").fadeIn(500, function(){      
+    $("#bookingError").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; Please, select time !</div>');
+           $("#btn-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
+         });
+  } else if(selectedDay=="Day"){
+    $("#bookingError").fadeIn(500, function(){      
+    $("#bookingError").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; Please, select date !</div>');
+           $("#btn-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
+      });
+  }else if(selectedDoc =="Doctors"){
+      $("#bookingError").fadeIn(500, function(){      
+    $("#bookingError").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; Please, select doctor !</div>');
+           
+      });
+  }else
+      {
+
+    $.post('api/booking', {
+      doctor: selectedDoc,
+      day: selectedDay,
+      time: selectedTime
+    }, function(resp) {
+      /*optional stuff to do after success */
+      //HANDLE AFTER BOOKING
+    });
+  }
+
+
+
+});/*END OF BOOKING DATA FILL*/
+
+
+
+  table_fill();
+  /*ADD PATIENT TO TABLE*/
+  function table_fill() {
+    
+    var patients = ["Shaxzod", "Mohi", "Sardor", "Sunnat"];
+
+
+    var data = [];
+
+    data = [ {
+        name: "DALER",
+        time: "10:00",
+        passport: "AA322132"
+      },
+      {
+        name: "Abdullo",
+        time: '12:00',
+        passport: "BB12323ds"
+      }
+
+    ]
+
+    $.each( data, function(i, val) {
+     
+     console.log(data[i]["name"]);
+
+     $("#patient_table").append('<tr><td>'+data[i]["time"]+'</td><td>'+data[i]["name"]+'</td><td class="userID">'+data[i]["passport"]+'</td></tr>')
+
+    });
+
+
+
+  };/*END PATIENT ADD TO TABLE*/
+
+  /*GET PATIENT ID WHEN CLIKED ON ROW*/
+  $("#patient_table tr").click(function(event) {
+    
+
+    var userID = $(this).find(".userID").html();
+    console.log(userID); 
+
+  });/*END OF GET PATIENT ID WHEN CLIKED ON ROW*/
+
+illness_his();
+
+
+  function illness_his() {
+
+ 
+    var data = [
+    {
+      date: '01-12-2017',
+      illness: "Cardiology",
+      prescription: 'HEle Hele hey lelelelelelele',
+      medicine: 'aspirin, pasatamol'
+    },
+    {
+      date: '04-12-2017',
+      illness: "Stomatology",
+      prescription: 'There is no Dent 5',
+      medicine: 'Ketanal'
+    },
+    {
+      date: '07-12-2017',
+      illness: 'neurologist',
+      prescription: 'Really asdf sadfasdf asdfsdf sdfaasdf',
+      medicine: 'sitramon'
+    }];
+
+
+    $.each(data, function(i, val) {
+       /* iterate through array or object */
+    
+    var fill_history = '<div class="panel panel-default">\
+                    <div class="panel-heading" role="tab" id="'+i+'">\
+                      <h4 class="panel-title">\
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#'+data[i]["illness"]+'" aria-expanded="true" aria-controls="'+data[i]["illness"]+'">'+data[i]["illness"]+'\
+                        </a>\
+                      </h4>\
+                    </div>\
+                    <div id="'+data[i]["illness"]+'" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="'+i+'">\
+                      <div class="panel-body">' +data[i]["prescription"]+
+                      '</div>\
+                      <div class="panel-footer">\
+                        <label for="prescription">Prescription</label> \
+                        <textarea id="prescription" name="prescription" class="form-control" rows="5"></textarea>\
+                        <label for="medicine">Medicine</label>\
+                        <textarea name="medicine" id="medicine" class="form-control"  rows="3"></textarea>\
+                        <button class="right btn btn-success" > Submit</button>\
+                      </div>\
+                    </div>\
+                  </div>';
+
+            console.log(data[i]["illness"]);   
+            $("#accordion").append(fill_history);
+      });
+
+  }
+
+  getNews();
+  function getNews(){
+
+
+    $.get('api/news', function(data) {
+
+        $.each(data, function(index, val) {
+          console.log(val['content']);
+        });
+
+    }, 'json');
+  }
+
+  
+
 
 });

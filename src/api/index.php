@@ -122,7 +122,6 @@ $app->post('/signin', function(Request $request, Response $response){
    $stmt = $db_con->prepare("SELECT * FROM siteUsers WHERE email=:email");
    $stmt->execute(array(":email"=>$user_email));
    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-   $count = $stmt->rowCount();
    
    if($row['password']==$user_password){
     
@@ -140,6 +139,27 @@ $app->post('/signin', function(Request $request, Response $response){
   }
  }
 
+
+});
+
+$app->get('/news', function(Request $request, Response $response){
+
+  require_once "../dbConfig.php";
+
+
+  try
+      { 
+
+      $stmt = $db_con->prepare("SELECT * FROM News");
+      $stmt->execute();
+      
+      $data = $stmt->fetchAll();
+      
+      return $response->withJson($data); 
+  }
+  catch(PDOException $e){
+      echo $e->getMessage();
+  }
 
 });
 
