@@ -150,13 +150,8 @@ $('document').ready(function()
    password: {
    required: true,
    },
-   confirm_password:{
-    required: true,
-    equalTo: "#password"
-   },
-   user_email: {
-            required: true,
-            email: true
+   passport_no: {
+            required: true
             },
     },
        messages:
@@ -164,10 +159,7 @@ $('document').ready(function()
             password:{
                       required: "please enter your password"
                      },
-            confirm_password: {
-              equalTo: "Does no match"
-            },
-            user_email: "please enter your email address",
+            passport_no: "please enter passport No",
        },
     submitHandler: submitForm 
        });  
@@ -589,5 +581,14 @@ illness_his();
   }
 
 
+  $("#booking_btn").click(function(event) {
+    /* Act on the event */
+    if($("#sign_out").text()){
+    $("#bookingModal").modal('show');
+    }
+    else{
+      alert("Please first sign in")
+    }
+  });
 
 });

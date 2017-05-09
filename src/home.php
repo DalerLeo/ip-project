@@ -62,7 +62,7 @@ include_once 'dbConfig.php';
           </ul>
           <ul class="nav navbar-nav navbar-right">
           <!--  -->
-            <li><a data-toggle="modal" data-target="#bookingModal"><span class="glyphicon glyphicon-pencil"></span> Booking</a></li>
+            <li><a data-toggle="modal"  id="booking_btn"><span class="glyphicon glyphicon-pencil"></span> Booking</a></li>
             <?php if(isset($_SESSION['user_session'])){ ?>
               <li>
                  <a href="#" id='sign_out'><span class="glyphicon glyphicon-log-out"></span> Sign out</a>
@@ -100,13 +100,13 @@ include_once 'dbConfig.php';
             <!-- Wrapper for slides -->
             <div class="carousel-inner" role="listbox">
               <div class="item active">
-                <img src="img/a.jpg" alt="...">
+                <img class="img-responsive" src="img/a.jpg" style="width:100%;" alt="...">
                 <div class="carousel-caption">
                   
                 </div>
               </div>
               <div class="item">
-                <img src="img/b.jpg" alt="...">
+                <img class="img-responsive" src="img/b.jpg" style="width:100% " alt="...">
                 <div class="carousel-caption">
                   
                 </div>
@@ -167,21 +167,19 @@ include_once 'dbConfig.php';
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Sign in</h4>
+        <h2 class="modal-title" id="myModalLabel">Sign in</h2>
       </div>
       <div class="modal-body">
       
          
        <form class="form-signin" method="post" id="login_form">
-      
-        <h2 class="form-signin-heading">Log In to WebApp.</h2><hr />
         
         <div id="error">
         <!-- error will be shown here ! -->
         </div>
         
         <div class="form-group">
-        <input type="email" class="form-control" placeholder="Email address" name="user_email" id="user_email" />
+        <input type="text" class="form-control" placeholder="Passport No" name="passport_no" id="passport_no" />
         <span id="check-e"></span>
         </div>
         
@@ -198,14 +196,8 @@ include_once 'dbConfig.php';
         </div>  
       
       </form>
-
-
-
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+
     </div>
   </div>
 </div>

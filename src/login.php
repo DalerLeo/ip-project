@@ -4,7 +4,7 @@
 
  if(isset($_POST['btn-login']))
  {
-  $user_email = trim($_POST['user_email']);
+  $passport_no = trim($_POST['passport_no']);
   $user_password = trim($_POST['password']);
   
   $password = md5($user_password);
@@ -13,7 +13,7 @@
   { 
   
    $stmt = $db_con->prepare("SELECT * FROM siteUsers WHERE email=:email");
-   $stmt->execute(array(":email"=>$user_email));
+   $stmt->execute(array(":email"=>$passport_no));
    $row = $stmt->fetch(PDO::FETCH_ASSOC);
    $count = $stmt->rowCount();
    

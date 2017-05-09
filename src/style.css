@@ -438,3 +438,11 @@ Extra Small Devices, Phones
 .glyphicon-remove {
 		color: red!important;
 }
+
+.nav li a{
+	cursor:pointer!important;
+}
+
+#patient_table td{
+	cursor:pointer;
+}
