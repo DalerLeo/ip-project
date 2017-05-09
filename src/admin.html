@@ -1,0 +1,52 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Admin page</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../libs/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="css/admin.css">
+  </head>
+  <body style="margin-top:30px;">
+
+    <div class="container">
+      
+      <form class="form-signin" id="admin_form" action="" method="post">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <div class="error"></div>
+        <label for="userName" class="sr-only">Email address</label>
+        <input type="text" id="userName" name="user_name" class="form-control" placeholder="user name" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+        <button class="btn btn-lg btn-primary btn-block" id="login" name="btn_admin_login" type="button">Sign in</button>
+      </form>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../libs/js/jquery.js"></script>
+    <script src="../libs/js/bootstrap.js"></script>
+    <script rel="javascript" src="js/admin.js"></script>
+  </body>
+</html>
+
+
+
+<!-- 
+<button type="button" id="bookingBtn" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#bookingModal">
+Booking
+</button> -->

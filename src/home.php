@@ -58,13 +58,6 @@ include_once 'dbConfig.php';
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Page 1-1</a></li>
-                <li><a href="#">Page 1-2</a></li>
-                <li><a href="#">Page 1-3</a></li>
-              </ul>
-            </li>
             <li><a href="#">Page 2</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -92,45 +85,7 @@ include_once 'dbConfig.php';
       
 
     
-
-    <div id="wrapper">
-
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="#">
-                        Start Bootstrap
-                    </a>
-                </li>
-                <li>
-                    <a href="#">Dashboard</a>
-                </li>
-                <li>
-                    <a href="#">Shortcuts</a>
-                </li>
-                <li>
-                    <a href="#">Overview</a>
-                </li>
-                <li>
-                    <a href="#">Events</a>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Services</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
-                </li>
-            </ul>
-        </div>
-        <!-- /#sidebar-wrapper -->
-
-        <!-- Page Content -->
-      <div id="page-content-wrapper">
-      <div class="container">
+<div class="container">
         <div class="row">
       <!-- CARUSEL+============================= -->   
 
@@ -147,16 +102,16 @@ include_once 'dbConfig.php';
               <div class="item active">
                 <img src="img/a.jpg" alt="...">
                 <div class="carousel-caption">
-                  ...
+                  
                 </div>
               </div>
               <div class="item">
                 <img src="img/b.jpg" alt="...">
                 <div class="carousel-caption">
-                  ...
+                  
                 </div>
               </div>
-              ...
+              
             </div>
 
             <!-- Controls -->
@@ -173,90 +128,36 @@ include_once 'dbConfig.php';
 <!-- CARUSEL ENDS============================= -->  
         <div class="row">
           
-          <div class="col-md-8"> 
-            <div class="row"> <!-- NEWS COLUMN -->
-              <!-- <div class="col-md-6"> 
+              <?php if(isset($_SESSION['user_session'])){ ?>
                 
-                <h3>Title</h3><br>
-               You have to create some title and little contnet for NEWS SHAXOD
-               
-               title of the news ==== Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-               
-               content of it ==== Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              </div>
-              
-              <div class="col-md-6"> 
-                <h3>Title</h3><br>
-               You have to create some title and little contnet for NEWS SHAXOD
-               
-               title of the news ==== Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-               
-               content of it ==== Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              </div>
-              
-              <div class="col-md-6"> 
-                <h3>Title</h3><br>
-               You have to create some title and little contnet for NEWS SHAXOD
-               
-               title of the news ==== Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-               
-               content of it ==== Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              </div>
-              
-              <div class="col-md-6"> 
-                <h3>Title</h3><br>
-               You have to create some title and little contnet for NEWS SHAXOD
-               
-               title of the news ==== Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-               
-               content of it ==== Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.  
-              </div>
-              
-              <div class="col-md-6"> 
-                <h3>Title</h3><br>
-               You have to create some title and little contnet for NEWS SHAXOD
-               
-               title of the news ==== Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-               
-               content of it ==== Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              </div> -->
-              
-                <div class="panel-group " id="accordion" role="tablist" aria-multiselectable="true">
+                  <div class="col-md-8" >       
+                    <div class="panel-group " id="accordion" role="tablist" aria-multiselectable="true">
                   
-                </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <h3>Patients</h3>
+                    <table class="table table-striped" >
 
-              
+                      <thead>
+                        <tr>
+                          <th>Time</th>
+                          <th>Name</th>
+                          <th>Passport</th>
+                        </tr>
+                      </thead>
+                      <tbody id="patient_table">
+                      </tbody>
+                    </table>               
+                  </div> <!-- ADDITIONAL INFO -->
+                  
+                <?php }else{ ?>
+                  <div class="row" id="news_container">
+                  </div>
+              <?php } ?>
             </div>
           </div>
-          <div class="col-md-4">
-          <button type="button" class="btn btn-default btn-lg" id="patient_add">*</button>
-              <h3>Patients</h3>
-            <table class="table table-striped" >
-
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th>Name</th>
-                  <th>Passport</th>
-                </tr>
-              </thead>
-              <tbody id="patient_table">
-              </tbody>
-            </table>               
-          </div> <!-- ADDITIONAL INFO -->
-
-        </div>
-      </div>
-    </div>
-        <!-- /#page-content-wrapper -->
-
-    </div>
-    <!-- /#wrapper -->
-   
-
-
-
-
+        
 <!-- SIGN IN MODAL -->
 
 
@@ -271,7 +172,7 @@ include_once 'dbConfig.php';
       <div class="modal-body">
       
          
-       <form class="form-signin" method="post" id="login-form">
+       <form class="form-signin" method="post" id="login_form">
       
         <h2 class="form-signin-heading">Log In to WebApp.</h2><hr />
         
@@ -291,7 +192,7 @@ include_once 'dbConfig.php';
       <hr />
         
         <div class="form-group">
-            <button type="submit" class="btn btn-primary" name="btn-login" id="btn-login">
+            <button type="submit" class="btn btn-primary" name="btn-login" id="btn_login">
       <span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In
    </button> 
         </div>  

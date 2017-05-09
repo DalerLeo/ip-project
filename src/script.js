@@ -144,7 +144,7 @@ $('document').ready(function()
 
      /* validation  for sign-in*/
 
-  $("#login-form").validate({
+  $("#login_form").validate({
       rules:
    {
    password: {
@@ -176,7 +176,7 @@ $('document').ready(function()
     /* login submit */
     function submitForm()
     {  
-   var data = $("#login-form").serialize();
+   var data = $("#login_form").serialize();
 
    $.ajax({
     
@@ -186,20 +186,20 @@ $('document').ready(function()
    beforeSend: function()
    { 
     $("#error").fadeOut();
-    $("#btn-login").html('<span class="glyphicon glyphicon-transfer"></span> &nbsp; sending ...');
+    $("#btn_login").html('<span class="glyphicon glyphicon-transfer"></span> &nbsp; sending ...');
    },
    success :  function(response)
       {      
      if(response=="ok"){
          
-      $("#btn-login").html('<img src="btn-ajax-loader.gif" /> &nbsp; Signing In ...');
+      $("#btn_login").html('<img src="btn-ajax-loader.gif" /> &nbsp; Signing In ...');
       window.location.href = "home.php";
      }
      else{
       
       $("#error").fadeIn(500, function(){      
     $("#error").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; '+response+' !</div>');
-           $("#btn-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
+           $("#btn_login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
          });
 
      }
@@ -578,18 +578,16 @@ illness_his();
 
   getNews();
   function getNews(){
+    $.post('getNews.php', function(response) {
 
+        $.each( JSON.parse(response), function(index, val) {
+          $('#news_container').append('<div class="col-md-6"><h3>'+val.title+'</h3><p>'+val.content+'</p></div>')
 
-    $.get('api/news', function(data) {
-
-        $.each(data, function(index, val) {
-          console.log(val['content']);
         });
 
-    }, 'json');
+    });
   }
 
-  
 
 
 });
