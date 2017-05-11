@@ -63,7 +63,9 @@ echo  $_SESSION['admin_session'];
 
 	<div class="container" id="news_container">
 		<div class="row">
-			<button class="btn btn-danger" id="delete_btn">Delete</button>
+			      <button class="btn btn-success" id="add_news_btn" data-toggle="modal" data-target="#addNewsModal">Add news</button>
+      <button class="btn btn-danger" id="delete_btn">Delete</button>
+
 		</div>
 		<div class="row">
 
@@ -93,6 +95,30 @@ echo  $_SESSION['admin_session'];
 			</div>
 		</div>
 	</div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="addNewsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Add news</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <input type="text" id="news_title" placeholder="Title">
+              </div>
+            <div class="form-group">  
+              <textarea class="form-control" placeholder="Content" id="news_content" rows="10"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="save_news_btn" data-dismiss="modal" class="btn btn-primary" >Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="../libs/js/jquery.js"></script>
     <script src="../libs/js/bootstrap.js"></script>

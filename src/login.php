@@ -12,20 +12,42 @@
   try
   { 
   
-   $stmt = $db_con->prepare("SELECT * FROM siteUsers WHERE email=:email");
-   $stmt->execute(array(":email"=>$passport_no));
+  if (isset($_POST['docCheck'])) {
+    
+  
+   $stmt = $db_con->prepare("SELECT * FROM doctors WHERE DocID=:DocID");
+   $stmt->execute(array(":DocID"=>$passport_no));
+   $row = $stmt->fetch(PDO::FETCH_ASSOC);
+   $count = $stmt->rowCount();
+   
+   if($row['DocPassword']==$user_password){
+    
+    echo "ok"; // log in
+    $_SESSION['user_session'] = $row['DocID'];
+   }
+   else{
+    
+    echo "email or password does not exist."; // wrong details 
+   }
+ }
+ else{
+  $stmt = $db_con->prepare("SELECT * FROM siteUsers WHERE passport=:passport");
+  $stmt->execute(array(":passport"=>$passport_no));
    $row = $stmt->fetch(PDO::FETCH_ASSOC);
    $count = $stmt->rowCount();
    
    if($row['password']==$user_password){
     
     echo "ok"; // log in
-    $_SESSION['user_session'] = $row['userID'];
+    $_SESSION['user_session'] = $row['passport'];
    }
    else{
     
     echo "email or password does not exist."; // wrong details 
    }
+ }
+
+   
     
   }
   catch(PDOException $e){

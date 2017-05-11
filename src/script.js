@@ -60,8 +60,8 @@ $('document').ready(function()
     var passport = $("label[for=passport] span").hasClass("glyphicon-ok");
 
 
-    if( !checker[0] && !checker[1] && !checker[2] && !checker[3] && !checker[4] && !checker[5] && !checker[6] && !checker[7]){
-      
+    /*if( !checker[0] && !checker[1] && !checker[2] && !checker[3] && !checker[4] && !checker[5] && !checker[6] && !checker[7]){
+      */
       $.post('api/signup', {
         first_name: inputObj['first_name'],
         last_name: inputObj['last_name'],
@@ -70,7 +70,8 @@ $('document').ready(function()
         email: inputObj['email'],
         phone: inputObj['phone'],
         job_study: inputObj['job-study'], 
-        password: inputObj['password']
+        password: inputObj['password'],
+        status: inputObj['status']
 
       },
       function(resp){
@@ -87,7 +88,7 @@ $('document').ready(function()
 
       }, "json");  
 
-    }
+    /*}*/
 
   });/*CLICK button finish*/
   /*Sign-up function*/
@@ -120,25 +121,6 @@ $('document').ready(function()
         alert("ERROR");
       }
     })
-
-  });
-
-/*Droopdown menu selected Doc */
- $('#doctors a').click(function(){
-    $('#selectedDoc').text($(this).text());
-   
-  });
-
-
- /*Droopdown menu selected Day */
- $('#days a').click(function(){
-    $('#selectedDay').text($(this).text());
-
-  });
-
- /*Droopdown menu selected Time */
- $('#time a').click(function(){
-    $('#selectedTime').text($(this).text());
 
   });
 
@@ -330,14 +312,14 @@ function birth_data_validator(){
       }
 
     });
-/*
+
     $("#phone").on('focusout', function(){
       
       var access_key = 'f6de90ecfb7c829fdefb0f96c2152b17';
       var phone_number = $(this).val();
 
 // verify email address via AJAX call
-      $.ajax({
+/*      $.ajax({
           url: 'http://apilayer.net/api/validate?access_key=' + access_key + '&number=' + phone_number,   
           dataType: 'json',
           success: function(json) {
@@ -356,8 +338,9 @@ function birth_data_validator(){
               return json.valid;
           }
       });
-
-    });*/
+*/$("label[for=phone] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
+  return true;
+    });
 
     $("#job_study").on('input', function(){
 
@@ -405,15 +388,17 @@ function Fil(){
     timeArray.push($(this).text() );
   });*/
 
-  $.each(days, function(index, val) {
+  
+
+ /* $.each(days, function(index, val) {
     $("#days").append("<li><a>"+val+"-03-2017</a></li>")
   });
 
   $.each(docs, function(index, val) {
     $("#doctors").append("<li><a>"+val+"</a></li>")   
   });
-
-  $.each(sec, function (index, value) {
+*/
+/*  $.each(sec, function (index, value) {
       var exactTime=0;
       
       if (value) {
@@ -421,7 +406,7 @@ function Fil(){
         console.log(index);
         $("#time").prepend("<li><a>"+exactTime+":00</a></li>");
         }
-  });
+  });*/
 
 }
 /*Fill show booking time*/
@@ -434,18 +419,21 @@ $("#bookingBtn").click(function() {
   var selectedDay = $("#selectedDay").text();
   var selectedTime = $("#selectedTime").text();
 
-
-  if (selectedTime=="Time") {
+  var selectedDay =  $("#day_drop select").val();
+  var selectedDoc =  $("#doc_drop select").val();
+    var id =  $("#doc_drop select").val();
+    var id =  $("#doc_drop select").val();
+  if (selectedTime=="------") {
       $("#bookingError").fadeIn(500, function(){      
     $("#bookingError").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; Please, select time !</div>');
            $("#btn-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
          });
-  } else if(selectedDay=="Day"){
+  } else if(selectedDay=="------"){
     $("#bookingError").fadeIn(500, function(){      
     $("#bookingError").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; Please, select date !</div>');
            $("#btn-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
       });
-  }else if(selectedDoc =="Doctors"){
+  }else if(selectedDoc =="------"){
       $("#bookingError").fadeIn(500, function(){      
     $("#bookingError").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; Please, select doctor !</div>');
            
@@ -454,27 +442,28 @@ $("#bookingBtn").click(function() {
       {
 
     $.post('api/booking', {
+      user: "12345",
       doctor: selectedDoc,
       day: selectedDay,
       time: selectedTime
     }, function(resp) {
-      /*optional stuff to do after success */
-      //HANDLE AFTER BOOKING
+
+      alert("BOOKED");
+
     });
   }
 
+  alert($("select").val());
 
-
-});/*END OF BOOKING DATA FILL*/
+});/*END OF BOOKING DATA FILL
 
 
 
   table_fill();
   /*ADD PATIENT TO TABLE*/
+  table_fill();
   function table_fill() {
     
-    var patients = ["Shaxzod", "Mohi", "Sardor", "Sunnat"];
-
 
     var data = [];
 
@@ -584,11 +573,70 @@ illness_his();
   $("#booking_btn").click(function(event) {
     /* Act on the event */
     if($("#sign_out").text()){
+
+
+      $.post('doctors.php', function(response) {
+
+        $.each(JSON.parse(response), function(index, val) {
+           $("#doc_list").append('<option value='+val.DocID+'>'+val.DocWorkField+'</option>')
+        });
+      });
+
+
+
     $("#bookingModal").modal('show');
     }
     else{
       alert("Please first sign in")
     }
   });
+
+
+/*GETTING FREE TIME OF SELECTED DOC REFERING TO DAY*/
+  $("#day_list").on('input', function (argument) {
+    // body...
+    var day =  $("#day_drop select").val();
+    var id =  $("#doc_drop select").val();
+    alert(id);
+    $.post('api/get_free_time', {date: day, docID:id }, function(response) {
+        $.each(response, function(index, val) {
+            alert(val);
+
+           $("#time_list").append('<option value='+val+'>'+val+'</option>')
+        }, "json");
+
+    });
+
+  })
+
+  /*Droopdown menu selected Doc */
+ $('#doctors a').click(function(){
+    $('#selectedDoc').text($(this).text());
+    console.log($(this).text());
+   
+  });
+
+
+ /*Droopdown menu selected Day */
+ $('#days a').click(function(){
+    $('#selectedDay').text($(this).text());
+
+  });
+
+ /*Droopdown menu selected Time */
+ $('#time a').click(function(){
+    $('#selectedTime').text($(this).text());
+
+  });
+
+
+$("#doc_table tr").click(function(event) {
+    
+
+    var userID = $(this).find(".docs").html();
+    console.log(userID); 
+
+  });/*END OF GET PATIENT ID WHEN CLIKED ON ROW*/
+
 
 });

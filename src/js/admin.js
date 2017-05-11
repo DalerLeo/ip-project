@@ -1,6 +1,10 @@
 $("document").ready(function() {
   
-  $("#news_btn").click(function() {
+  news_fill();
+  $("#news_btn").on('click', news_fill);
+  
+
+  function news_fill() {
     
     $("#content_container").html(
           '<div class="table-responsive">\
@@ -25,7 +29,7 @@ $("document").ready(function() {
           '<tr>\
               <td>\
                 <div class="checkbox">\
-                  <label><input type="checkbox" value="'+val.id+'">'+val.id+'</label>\
+                  <label><input type="checkbox" value="'+val.id+'"></label>\
                 </div>\
               </td>\
               <td>'+val.title+'</td>\
@@ -33,9 +37,9 @@ $("document").ready(function() {
             </tr>');
       });
 
-    })
+    });
 
-  });
+  }
 
 
   $("#delete_btn").click(function(event) {
@@ -44,7 +48,12 @@ $("document").ready(function() {
       alert("You can choose only one news");
     }
     else{
-      alert($("input:checked").val());
+      var id = $("input:checked").val();
+
+      
+      $.post('api/delete_news', {id: id }, function(response) {
+          news_fill();
+      });
     }  
   });
 /*FILLING DOCTOR TABLE WHEN DOCTORS BUTTON CLICKED*/
@@ -64,6 +73,24 @@ $("document").ready(function() {
                 </tbody\
               </table>\
             </div>');
+
+    $.post("api/get_doctors", function(response){
+      
+      $.each(response, function(i, val) {
+
+        $("#table_body").append(
+          '<tr>\
+              <td>\
+                <div class="checkbox">\
+                  <label><input type="checkbox" value="'+val.id+'"></label>\
+                </div>\
+              </td>\
+              <td>'+val.DocID+'</td>\
+              <td>'+val.DocName+'</td>\
+            </tr>');
+      });
+
+    });
 
   });
 
@@ -91,4 +118,18 @@ $("document").ready(function() {
       });
 
     });
+
+  $("#save_news_btn").click(function(event) {
+
+    var content = $("textarea#news_content").val();
+    var title = $("input#news_title").val();
+
+    $.post('api/save_news', {content: content, title:title}, function(response) {
+        news_fill();
+
+
+    });
+
+  });
+
 });  

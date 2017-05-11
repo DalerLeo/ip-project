@@ -2,9 +2,12 @@
 session_start();
 include_once 'dbConfig.php';
 
+/*require_once('phpFuncitons/date_return.php');*/
+
+
+
     if(isset($_SESSION['user_session']))
   {
-
 
   $stmt = $db_con->prepare("SELECT * FROM siteUsers WHERE userID=:uid");
   $stmt->execute(array(":uid"=>$_SESSION['user_session']));
@@ -13,9 +16,21 @@ include_once 'dbConfig.php';
 
   }
 
-  
+
+function show_date(){
+
+ for($x=1;$x<8;$x++){
+    $add = strtotime('+'. $x . ' day');
+    echo "<option>" . date('Y-m-d' , $add) . "</option>";
+    }
+
+
+}
 
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -57,8 +72,8 @@ include_once 'dbConfig.php';
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">Page 2</a></li>
+            <li class="active"><a href="/">Home</a></li>
+            
           </ul>
           <ul class="nav navbar-nav navbar-right">
           <!--  -->
@@ -152,7 +167,12 @@ include_once 'dbConfig.php';
                   </div> <!-- ADDITIONAL INFO -->
                   
                 <?php }else{ ?>
+
                   <div class="row" id="news_container">
+<nav class="container-fluid navbar-inverse" style="margin-top:20px;">
+  <h3 style="color:white!important">News</h3>
+</nav>
+  
                   </div>
               <?php } ?>
             </div>
@@ -181,6 +201,11 @@ include_once 'dbConfig.php';
         <div class="form-group">
         <input type="text" class="form-control" placeholder="Passport No" name="passport_no" id="passport_no" />
         <span id="check-e"></span>
+        </div>
+        <div class="form-group">
+          
+          <input type="checkbox" name="docCheck" id="status"> 
+          <label for="status">Doctor?</label>
         </div>
         
         <div class="form-group">
@@ -245,6 +270,10 @@ include_once 'dbConfig.php';
           <input id="job_study" name="job_study" type="text"  class="form-control">
         </div>
         <div class="form-group">
+          <input id="status" name="status" type="checkbox" value="1">
+          <label for="status"> Doctor?<span></span> </label>
+        </div>
+        <div class="form-group">
           <label for="password">password <span></span> </label>
           <input id="password" name="password" type="password"  class="form-control">
         </div>
@@ -284,30 +313,34 @@ include_once 'dbConfig.php';
       <div class="modal-body">
         <div id="bookingError"></div>
         <div class="col-md-4">
-          <div class="dropdown">
-            <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle" href="#">
-              <span id="selectedDoc">Doctors</span><span class="caret"></span></a>
-            <ul class="dropdown-menu" id="doctors">
-
-            </ul>
+          <div class="dropdown" id="doc_drop">
+            <div class="form-group" >
+              <label for="doc_list">Doctors</label>
+              <select class="form-control" id="doc_list">
+                <option>------</option>>
+              </select>
+            </div>
           </div>
         </div>  
         <div class="col-md-4">
           <div class="dropdown">
-            <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle" href="#">
-              <span id="selectedDay">Day</span><span class="caret"></span></a>
-            <ul class="dropdown-menu" id="days">
-
-            </ul>
+            <div class="form-group" id="day_drop" >
+              <label for="day_list">Date</label>
+              <select class="form-control" id="day_list">
+                <option>------</option>
+                <?php show_date(); ?>
+              </select>
+            </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="dropdown">
-            <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle" href="#">
-              <span id="selectedTime">Time</span><span class="caret"></span></a>
-            <ul class="dropdown-menu" id="time">
-
-            </ul>
+            <div class="form-group" >
+              <label for="sel1">Time:</label>
+              <select class="form-control" id="time_list">
+                
+              </select>
+            </div>
           </div>
       </div>
     </div>
@@ -324,11 +357,9 @@ include_once 'dbConfig.php';
 
     <!-- END BOOKING MODAL  -->
 
-
-
-
-
-
+  <footer class="container-fluid navbar-inverse">
+  <p>Footer Text</p>
+</footer>
 
 
     <!-- Bootstrap core JavaScript

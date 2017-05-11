@@ -12,18 +12,18 @@ $dbname = "Records";
 
         $stmt = $connect->prepare("SELECT *FROM News");
         $stmt->execute();
-        $news = $stmt->fetchAll();
+        $news_row = $stmt->fetchAll();
         $results = array();
 
-        foreach ($news as $value) {
+        foreach ($news_row as $news) {
          $result = array(
-            'title' => $value['title'],
-            'content' => $value['content'],
-            'id' => $value['id']);
+            'title' => $news['title'],
+            'content' => $news['content'],
+            'id' => $news['id']);
          $results[] = $result;
         }
 
-        echo json_encode($results);
+        echo json_encode($news_row);
     }
     catch (PDOException $except) {
         echo  $except->getMessage();

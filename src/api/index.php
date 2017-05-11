@@ -14,7 +14,192 @@ $app->get('/hello/{name}', function (Request $request, Response $response) {
 
 });
 
+$app->post('/booking', function(Request $request, Response $response){
 
+  require_once "../dbConfig.php";
+
+  $data = $request->getParsedBody();
+
+  $userID = filter_var($data['user'], FILTER_SANITIZE_STRING);
+  $docID = filter_var($data['doctor'], FILTER_SANITIZE_STRING);
+  $secT = filter_var($data['time'], FILTER_SANITIZE_STRING);
+  $date = filter_var($data['date'], FILTER_SANITIZE_STRING);
+
+  try{
+  $sql= " 
+  SELECT $secT 
+  FROM booking 
+  WHERE DocID = '$docID' ";
+
+  $section = $conn->prepare($sql);
+  $section->execute(); 
+  $row = $section->fetchAll();
+      
+
+   
+   if(is_null($row[0][$secT])){
+          $update = "UPDATE booking  
+          SET $secT = '$userID' 
+          WHERE DocID = '$docID' AND Date = '$date'";
+
+          $conn->exec($update);
+          echo "\n booked!!!!!";
+   }else{
+      echo "\n Already reserved!!!!";
+   }
+   
+
+   if(date("h,a")=="05,pm"){
+          $selDoc="SELECT DocID FROM doctors ";
+          $section = $conn->prepare($selDoc);
+          $section->execute(); 
+          $SecValues = $section->fetchAll();
+          $c=0;
+          foreach ($SecValues as $key) { 
+              $c++;
+          }
+          for($x=0;$x<$c;$x++){
+              $ad=strtotime("+7 day");
+              $incr = "INSERT INTO booking ( DocID , Date) 
+              VALUES ($SecValues[$x]['DocID'],
+              date('Y-m-d' , $ad))";
+              $conn->exec($incr);
+          }
+   }
+
+
+   
+  echo "Connected Succesfully!!!";
+      }
+  catch(PDOException $e)
+      {
+      echo "Connection failed: " . $e->getMessage();
+      }
+    
+});
+
+$app->post('/get_free_time', function(Request $request, Response $response){
+
+
+    $data = $request->getParsedBody();
+
+
+    $date = filter_var($data['date'], FILTER_SANITIZE_STRING);
+    require_once('../dbConfig.php');
+
+   try {
+
+    $doc = $data['docID'];
+    $select= "SELECT Sec1 , Sec2 , Sec3 , Sec4, Sec6 , Sec7, Sec8 
+    FROM booking 
+    WHERE DocID = '$doc' AND Date = '$date' ";
+
+    $section = $db_con->prepare($select);
+     
+    $section->execute();
+   
+    $row = $section->fetch(PDO::FETCH_LAZY);
+     $i=0;
+     $tim=array();
+     
+      if($row['Sec1']==NULL){
+        $tim[$i]= " 9:00 - 10:00";
+        $i++;
+      }if($row['Sec2']==NULL){
+        $tim[$i]= "10:00 - 11:00";
+        $i++;
+      }if($row['Sec3']==NULL){
+        $tim[$i]= "11:00 - 12:00";
+        $i++;
+      }if($row['Sec4']==NULL){
+        $tim[$i]= "12:00 - 13:00";
+        $i++;
+      }if($row['Sec6']==NULL){
+        $tim[$i]= "14:00 - 15:00";
+        $i++;
+      }if($row['Sec7']==NULL){
+        $tim[$i]= "15:00 - 16:00";
+        $i++;
+      }if($row['Sec8']==NULL){
+        $tim[$i]= "16:00 - 17:00";
+        $i++;
+      }
+
+        return $response->withJson($tim);
+
+    }catch(PDOException $e)
+        {
+        echo "Connection failed: " . $e->getMessage();
+        }
+
+  });
+
+$app->post('/get_doctors', function(Request $request, Response $response){
+
+    require_once "../dbConfig.php";
+    try {
+
+
+        $stmt = $db_con->prepare("SELECT * FROM doctors");
+        $stmt->execute();
+        $news_row = $stmt->fetchAll();
+        $results = array();
+
+
+        return $response->withJson($news_row);
+    }
+    catch (PDOException $except) {
+        echo  $except->getMessage();
+    }
+    $connect = null;
+
+
+});
+
+$app->post('/delete_news', function(Request $request, Response $response){
+
+  $data = $request->getParsedBody();
+  $id = filter_var($data['id'], FILTER_SANITIZE_STRING);
+
+  require_once "../dbConfig.php";
+
+  try {
+    
+      $query = "DELETE FROM News WHERE id= '$id'";
+
+      $db_con->exec($query);
+      return $response->withJson(0);
+
+  } catch (PDOException $e) {
+      echo $query . $e->getMessage();
+  }
+
+});
+
+/*ADD NEWS TO DATA BASE*/
+$app->post('/save_news', function(Request $request, Response $response){
+
+  $data = $request->getParsedBody();
+  $resp = [];
+
+  $title = filter_var($data['title'], FILTER_SANITIZE_STRING);
+  $content = filter_var($data['content'], FILTER_SANITIZE_STRING);
+
+  //print_r($data);
+
+  require_once '../dbConfig.php';
+
+  try {
+    $query = "INSERT INTO News( title, content) VALUES ('$title', '$content')";
+
+    $db_con->exec($query);
+    return $response->withJson(0);
+
+  } catch (PDOException $except) {
+    echo $query . $except->getMessage();
+  }
+
+});
 /*Checking wheather user with same passpoert No has been registered*/
 $app->post('/passport', function (Request $request, Response $response){
 
@@ -60,8 +245,9 @@ $app->post('/signup', function(Request $request, Response $response){
   $resp['phone'] = filter_var($data['phone'], FILTER_SANITIZE_STRING);
   $resp['job_study'] = filter_var($data['job_study'], FILTER_SANITIZE_STRING);
   $resp['password'] = filter_var($data['password'], FILTER_SANITIZE_STRING);
+  $resp['status'] = filter_var($data['status'], FILTER_SANITIZE_STRING);
 
-
+  print(resp['status']);
   require_once "../dbConfig.php";
 
   try {
