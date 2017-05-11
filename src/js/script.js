@@ -38,30 +38,37 @@ $('document').ready(function()
 
 /*Click function handler*/
   $("#sign_up_btn").click(function() {
-    
+    var position = $("#position select").val();
+    var checker= [];
     var inputs = $("#sign_up_form").serializeArray();
     var inputObj = {};
-    var checker= [];
+    
     $.each(inputs, function(i,field){
       inputObj[field.name] = field.value;
       var select = field.name;
+      console.log(inputObj[select]);
+
       if(inputObj[select] && confirm_password() && birth_data_validator()){
           //$("label[for="+select+"] span").addClass('glyphicon glyphicon-ok');
       }
       else{
+
+        if(select!="status")
         $("label[for="+select+"] span").addClass('glyphicon glyphicon-remove');
       }
       checker[i] = $("label[for="+select+"] span").hasClass("glyphicon-remove");
-      var html= $("label[for="+select+"]").html() +"this field is required";
-      $("label[for="+select+"]").html(html);
-      console.log(html);
+      /*var html= $("label[for="+select+"]").html() +"this field is required";
+      $("label[for="+select+"]").html(html);*/
+      
+      console.log(i +". " +inputObj[select] +" "+ checker[i]);
     });
       
     var passport = $("label[for=passport] span").hasClass("glyphicon-ok");
+        
 
-
-    /*if( !checker[0] && !checker[1] && !checker[2] && !checker[3] && !checker[4] && !checker[5] && !checker[6] && !checker[7]){
-      */
+    if( !checker[0] && !checker[1] && !checker[2] && !checker[3] && !checker[4] && !checker[5] && !checker[6] && !checker[7]){
+      
+      alert("IF WORKS")
       $.post('api/signup', {
         first_name: inputObj['first_name'],
         last_name: inputObj['last_name'],
@@ -69,9 +76,10 @@ $('document').ready(function()
         birth_date: inputObj['birth_date'],
         email: inputObj['email'],
         phone: inputObj['phone'],
-        job_study: inputObj['job-study'], 
-        password: inputObj['password'],
-        status: inputObj['status']
+        job_study: inputObj['job_study'], 
+        password: inputObj['password1'],
+        status: inputObj['status'],
+        position: position
 
       },
       function(resp){
@@ -79,16 +87,16 @@ $('document').ready(function()
         
         console.log(resp);
         if(!resp){
-           $('#myModal').modal('show'); 
+           $('#successModal').modal('show'); 
           setTimeout(function() {
             
           }, 3000);
-/*          window.location.href = 'home.php';*/
+          window.location.href = 'index.php';
         }
 
       }, "json");  
 
-    /*}*/
+    }
 
   });/*CLICK button finish*/
   /*Sign-up function*/
@@ -114,8 +122,8 @@ $('document').ready(function()
     $.post('logout.php', function(resp) {
  
       if(resp){
-        alert("LOGGED OUT");
-        window.location.href = "home.php";
+        alert("BYE BYE ;)");
+        window.location.href = "index.php";
       }
       else{
         alert("ERROR");
@@ -164,19 +172,20 @@ $('document').ready(function()
    },
    success :  function(response)
       {      
-     if(response=="ok"){
-         
-      $("#btn_login").html('<img src="btn-ajax-loader.gif" /> &nbsp; Signing In ...');
-      window.location.href = "home.php";
-     }
-     else{
-      
-      $("#error").fadeIn(500, function(){      
-    $("#error").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; '+response+' !</div>');
-           $("#btn_login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
-         });
+        console.log(response);
+         if(response=="ok"){
+             
+            $("#btn_login").html('<img src="btn-ajax-loader.gif" /> &nbsp; Signing In ...');
+          window.location.href = "index.php";
+         }
+         else{
+          
+            $("#error").fadeIn(500, function(){      
+              $("#error").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; '+response+' !</div>');
+               $("#btn_login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
+            });
 
-     }
+        }
      }
    });
     return false;
@@ -187,13 +196,11 @@ $('document').ready(function()
     /*password confirmation*/
 function confirm_password() {
 
-  if($("#password2").val()!==$("#sign_up_form #password").val() && $("#sign_up_form #password").val() ){
-          console.log($("#password2").val() + "!==" + $("#sign_up_form #password").val());
+  if($("#password2").val()!==$("#sign_up_form #password1").val() && $("#sign_up_form #password1").val() ){
           $("label[for=password2] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
           return false;
     }
     else{
-                  console.log($("#password2").val() + "==" + $("#password").val());
         $("label[for=password2] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
         return true;
     }
@@ -203,12 +210,21 @@ function confirm_password() {
 /*passport validation*/
 function passport_validation() {
 
+  var inputs = $("#sign_up_form").serializeArray();
+    
+    
+
+  var status = inputs[1]['value'];
+  if(!status){
+    status = 0;
+  }
+
   var input = /([a-zA-Z]){2}\d{6}/;
   var pass = $("#sign_up_form #passport").val();
   var check = input.test(pass);
   if(check){
 
-    $.post('api/passport', { passport: pass } , function(resp) {
+    $.post('api/passport', { passport: pass, status:status } , function(resp) {
       
       if(!resp){
             $("#sign_up_form label[for=passport] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok');
@@ -354,14 +370,14 @@ function birth_data_validator(){
       }
     });
 
-    $("#password").on('input', function(){
+    $("#password1").on('input', function(){
 
       if($(this).val()){
-        $("label[for=password] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok').cs;
+        $("label[for=password1] span").removeClass('glyphicon glyphicon-remove').addClass('glyphicon glyphicon-ok').cs;
         return true;
       }
       else{
-        $("label[for=password] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
+        $("label[for=password1] span").removeClass('glyphicon glyphicon-ok').addClass('glyphicon glyphicon-remove');
         return false;
       }
     });
@@ -387,7 +403,6 @@ function Fil(){
   li.each(function(index){
     timeArray.push($(this).text() );
   });*/
-
   
 
  /* $.each(days, function(index, val) {
@@ -415,14 +430,15 @@ function Fil(){
 
 $("#bookingBtn").click(function() {
 
-  var selectedDoc = $('#selectedDoc').text();
-  var selectedDay = $("#selectedDay").text();
-  var selectedTime = $("#selectedTime").text();
-
   var selectedDay =  $("#day_drop select").val();
   var selectedDoc =  $("#doc_drop select").val();
+  var selectedTime = $("#time_drop select").val();
+
     var id =  $("#doc_drop select").val();
     var id =  $("#doc_drop select").val();
+    var userID = $("#userID").val();
+
+    console.log(userID); 
   if (selectedTime=="------") {
       $("#bookingError").fadeIn(500, function(){      
     $("#bookingError").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; Please, select time !</div>');
@@ -442,18 +458,15 @@ $("#bookingBtn").click(function() {
       {
 
     $.post('api/booking', {
-      user: "12345",
+      user: userID,
       doctor: selectedDoc,
       day: selectedDay,
       time: selectedTime
     }, function(resp) {
 
-      alert("BOOKED");
 
     });
   }
-
-  alert($("select").val());
 
 });/*END OF BOOKING DATA FILL
 
@@ -473,16 +486,18 @@ $("#bookingBtn").click(function() {
         passport: "AA322132"
       },
       {
-        name: "Abdullo",
+        name: "Muxlisa",
         time: '12:00',
-        passport: "BB12323ds"
+        passport: "AB12345"
       }
 
     ]
+/*              $.post('api/queueing_patients', {docID: docID}, function(resp) {
+                  
 
+                  });*/
     $.each( data, function(i, val) {
      
-     console.log(data[i]["name"]);
 
      $("#patient_table").append('<tr><td>'+data[i]["time"]+'</td><td>'+data[i]["name"]+'</td><td class="userID">'+data[i]["passport"]+'</td></tr>')
 
@@ -497,7 +512,93 @@ $("#bookingBtn").click(function() {
     
 
     var userID = $(this).find(".userID").html();
-    console.log(userID); 
+    $("#insert_patient").html(userID + "");
+
+    $.post('api/get_medical_history', {userID: userID}, function(resp) {
+       
+       $("#accor1").html('<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">\
+                      <div class="panel panel-success">\
+                        <div class="panel-heading" role="tab" id="">\
+                          <h4 class="panel-title">\
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#Dentist" aria-expanded="true" aria-controls="Dentist">\
+                              Dentist\
+                            </a>\
+                          </h4>\
+                        </div>\
+                        <div id="Dentist" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">\
+                          \
+                        </div>\
+                      </div>\
+                    </div>\
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">\
+                      <div class="panel panel-success">\
+                        <div class="panel-heading" role="tab" id="">\
+                          <h4 class="panel-title">\
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#Surgeon" aria-expanded="true" aria-controls="Surgeon">\
+                              Surgeon\
+                            </a>\
+                          </h4>\
+                        </div>\
+                        <div id="Surgeon" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">\
+                          \
+                        </div>\
+                      </div>\
+                    </div>\
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">\
+                      <div class="panel panel-success">\
+                        <div class="panel-heading" role="tab" id="">\
+                          <h4 class="panel-title">\
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#Pediatrician" aria-expanded="true" aria-controls="Pediatrician">\
+                              Pediatrician\
+                            </a>\
+                          </h4>\
+                        </div>\
+                        <div id="Pediatrician" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">\
+                          \
+                        </div>\
+                      </div>\
+                    </div>\
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">\
+                      <div class="panel panel-success">\
+                        <div class="panel-heading" role="tab" id="">\
+                          <h4 class="panel-title">\
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#Cardiologist" aria-expanded="true" aria-controls="Cardiologist">\
+                              Cardiologist\
+                            </a>\
+                          </h4>\
+                        </div>\
+                        <div id="Cardiologist" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">\
+                          \
+                        </div>\
+                      </div>\
+                    </div>\
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">\
+                      <div class="panel panel-success">\
+                        <div class="panel-heading" role="tab" id="">\
+                          <h4 class="panel-title">\
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#Gynecologist" aria-expanded="true" aria-controls="Gynecologist">\
+                              Gynecologist\
+                            </a>\
+                          </h4>\
+                        </div>\
+                        <div id="Gynecologist" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">\
+                          \
+                        </div>\
+                      </div>\
+                    </div>');
+        $.each(resp, function(index, val) {
+            
+          var collapse = '<div class="panel-body">\
+                            <span class="badge">'+val.Date+'</span><br> \
+                              '+val.Prescription+'\
+                            </div>\
+                          <div class="panel-footer">'+val.Medicine+'</div>';
+                        
+                        $("#"+val.WorkField).append(collapse);
+        });
+
+
+     });
 
   });/*END OF GET PATIENT ID WHEN CLIKED ON ROW*/
 
@@ -507,53 +608,24 @@ illness_his();
   function illness_his() {
 
  
-    var data = [
-    {
-      date: '01-12-2017',
-      illness: "Cardiology",
-      prescription: 'HEle Hele hey lelelelelelele',
-      medicine: 'aspirin, pasatamol'
-    },
-    {
-      date: '04-12-2017',
-      illness: "Stomatology",
-      prescription: 'There is no Dent 5',
-      medicine: 'Ketanal'
-    },
-    {
-      date: '07-12-2017',
-      illness: 'neurologist',
-      prescription: 'Really asdf sadfasdf asdfsdf sdfaasdf',
-      medicine: 'sitramon'
-    }];
 
-
-    $.each(data, function(i, val) {
-       /* iterate through array or object */
-    
-    var fill_history = '<div class="panel panel-default">\
-                    <div class="panel-heading" role="tab" id="'+i+'">\
-                      <h4 class="panel-title">\
-                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#'+data[i]["illness"]+'" aria-expanded="true" aria-controls="'+data[i]["illness"]+'">'+data[i]["illness"]+'\
-                        </a>\
-                      </h4>\
-                    </div>\
-                    <div id="'+data[i]["illness"]+'" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="'+i+'">\
-                      <div class="panel-body">' +data[i]["prescription"]+
-                      '</div>\
-                      <div class="panel-footer">\
-                        <label for="prescription">Prescription</label> \
-                        <textarea id="prescription" name="prescription" class="form-control" rows="5"></textarea>\
-                        <label for="medicine">Medicine</label>\
-                        <textarea name="medicine" id="medicine" class="form-control"  rows="3"></textarea>\
-                        <button class="right btn btn-success" > Submit</button>\
-                      </div>\
-                    </div>\
-                  </div>';
-
-            console.log(data[i]["illness"]);   
-            $("#accordion").append(fill_history);
+    var userID = $("div #userID").text();
+    console.log(userID);
+    $.post('api/get_medical_history', {userID: userID}, function(resp) {
+      
+      $.each(resp, function(index, val) {
+         var collapse = '<div class="panel-body">\
+                            <span class="badge">'+val.Date+'</span><br> \
+                              '+val.Prescription+'\
+                            </div>\
+                          <div class="panel-footer panel-info">'+val.Medicine+'</div>';
+                        
+                        $("#"+val.WorkField).append(collapse);
       });
+
+
+    });
+
 
   }
 
@@ -562,7 +634,8 @@ illness_his();
     $.post('getNews.php', function(response) {
 
         $.each( JSON.parse(response), function(index, val) {
-          $('#news_container').append('<div class="col-md-6"><h3>'+val.title+'</h3><p>'+val.content+'</p></div>')
+          if(index<4)  
+            $('#news_container').append('<div class="col-md-6"><h3>'+val.title+'</h3><p>'+val.content+'</p></div>')
 
         });
 
@@ -587,7 +660,8 @@ illness_his();
     $("#bookingModal").modal('show');
     }
     else{
-      alert("Please first sign in")
+
+      alert("Please first sign in");
     }
   });
 
@@ -597,12 +671,10 @@ illness_his();
     // body...
     var day =  $("#day_drop select").val();
     var id =  $("#doc_drop select").val();
-    alert(id);
     $.post('api/get_free_time', {date: day, docID:id }, function(response) {
         $.each(response, function(index, val) {
-            alert(val);
-
-           $("#time_list").append('<option value='+val+'>'+val+'</option>')
+           
+            $("#time_list").append('<option value='+val+'>'+val+'</option>');
         }, "json");
 
     });
@@ -638,5 +710,42 @@ $("#doc_table tr").click(function(event) {
 
   });/*END OF GET PATIENT ID WHEN CLIKED ON ROW*/
 
+
+  $("#docSubmit").click(function(event) {
+
+      var prescription = $("#prescription").val();
+      var medicine = $("#medicine").val();
+      var userID= $("#insert_patient").html();
+      var workField = $("#doc_work_field").html();
+      var docID = $("#docID").text();
+      if(userID=='<span></span>'){
+        alert("Please, first select patient");
+      }
+      else{
+
+        $.post('api/post_medical_history', {
+          userID: userID,
+          docID: docID,
+          prescription: prescription,
+          medicine: medicine
+          }, function(resp) {
+          
+            if(!resp){
+
+              var collapse = '<div class="panel-body">\
+                              <span class="badge">2017-05-11</span><br> \
+                                '+prescription+'\
+                              </div>\
+                            <div class="panel-footer">'+medicine+'</div>';
+                          
+                          $("#"+workField).append(collapse);
+              $("#prescription").val('');
+              $("#medicine").val(' ');                      
+              alert("Successfully added!!!");
+            }
+
+        });
+      }
+  });
 
 });

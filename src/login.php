@@ -19,15 +19,16 @@
    $stmt->execute(array(":DocID"=>$passport_no));
    $row = $stmt->fetch(PDO::FETCH_ASSOC);
    $count = $stmt->rowCount();
-   
+
    if($row['DocPassword']==$user_password){
     
     echo "ok"; // log in
-    $_SESSION['user_session'] = $row['DocID'];
+    $_SESSION['doc_session'] = $row['DocID'];
+
    }
    else{
     
-    echo "email or password does not exist."; // wrong details 
+    echo "Doc or password does not exist."; // wrong details 
    }
  }
  else{

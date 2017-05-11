@@ -8,9 +8,6 @@ if(!isset($_SESSION['admin_session'])){
 	header("Location: admin.html");
 }
 
-
-
-echo  $_SESSION['admin_session'];
 ?>
 
 
@@ -33,12 +30,12 @@ echo  $_SESSION['admin_session'];
     <!-- Bootstrap core CSS -->
     <link href="../libs/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/admin.css">
   </head>
   <body>
 
- <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -47,13 +44,17 @@ echo  $_SESSION['admin_session'];
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="#">Admin panel</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" id="news_btn">News</a></li>
-            <li><a href="#" id="doctor_btn">Doctors</a></li>
-            <li><a href="#" id="user_btn">Users</a></li>
+          <ul class="nav navbar-nav navbar-left">
+            <li role="presentation" class="active"><a href="#news" id="news_btn" aria-controls="home" role="tab" data-toggle="tab">News</a></li>
+            <li role="presentation"><a id="doctors_btn" href="#doctors" aria-controls="doctors" role="tab" data-toggle="tab">Doctors</a></li>
+            <li role="presentation"><a href="#users" id="users_btn" aria-controls="messages" role="tab" data-toggle="tab">Users</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" id='sign_out'><span class="glyphicon glyphicon-log-out"></span> Sign out</a>
+              </li>  
 
           </ul>
 
@@ -61,40 +62,27 @@ echo  $_SESSION['admin_session'];
       </div>
     </nav>
 
-	<div class="container" id="news_container">
+	<div class="container">
 		<div class="row">
-			      <button class="btn btn-success" id="add_news_btn" data-toggle="modal" data-target="#addNewsModal">Add news</button>
-      <button class="btn btn-danger" id="delete_btn">Delete</button>
+  <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="news">
+        <button id="add_news" class="btn btn-success" >Add news</button>
+        <button class="btn btn-danger" id="delete_news_btn">Delete</button>
+        <div id="news_content"></div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="doctors">
+        <button class="btn btn-danger" id="delete_docs_btn">Delete</button>
+        <div id="docs_content"></div>
+      </div>  
+      <div role="tabpanel" class="tab-pane" id="users">
+        <button class="btn btn-danger" id="delete_users_btn">Delete</button>
+        <div id="users_content"></div>
+      </div>
+    </div>  
+  </div>
+</div>
 
-		</div>
-		<div class="row">
-
-			<div class="col-md-12" id="content_container">
-				<div class="table-responsive">
-	            <table class="table table-striped">
-	              <thead>
-	                <tr>
-	                  <th>#</th>
-	                  <th>Title</th>
-	                  <th>Content</th>
-		                </tr>
-	              </thead>
-	              <tbody>
-	                <tr>
-	                  <td>
-	                  	<div class="checkbox">
-							<label><input type="checkbox" value="">1
-							</label>
-						</div></td>
-	                  <td>1,001</td>
-	                  <td>Lorem</td>
-	                </tr>
-	              </tbody>
-	            </table>
-	          </div>
-			</div>
-		</div>
-	</div>
 
 
     <!-- Modal -->
@@ -120,15 +108,10 @@ echo  $_SESSION['admin_session'];
       </div>
     </div>
 
+
     <script src="../libs/js/jquery.js"></script>
     <script src="../libs/js/bootstrap.js"></script>
     <script rel="javascript" src="js/admin.js"></script>
   </body>
 </html>
 
-
-
-<!-- 
-<button type="button" id="bookingBtn" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#bookingModal">
-Booking
-</button> -->

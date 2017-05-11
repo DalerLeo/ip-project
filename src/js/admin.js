@@ -1,12 +1,12 @@
 $("document").ready(function() {
   
-  news_fill();
+ news_fill();
   $("#news_btn").on('click', news_fill);
   
 
   function news_fill() {
     
-    $("#content_container").html(
+    $("#news_content").html(
           '<div class="table-responsive">\
               <table class="table table-striped">\
                 <thead>\
@@ -16,7 +16,7 @@ $("document").ready(function() {
                     <th>Content</th>\
                     </tr>\
                 </thead>\
-                <tbody id="table_body">\
+                <tbody id="news_table_body">\
                 </tbody\
               </table>\
             </div>');
@@ -25,7 +25,7 @@ $("document").ready(function() {
       
       $.each(JSON.parse(response), function(i, val) {
 
-        $("#table_body").append(
+        $("#news_table_body").append(
           '<tr>\
               <td>\
                 <div class="checkbox">\
@@ -42,7 +42,64 @@ $("document").ready(function() {
   }
 
 
-  $("#delete_btn").click(function(event) {
+  $("#sign_out").click(function(){
+
+//    window.location.href = "register.html";
+
+    $.post('logout.php', function(resp) {
+ 
+      if(resp){
+        alert("BYE BYE ;)");
+        window.location.href = "admin.html";
+      }
+      else{
+        alert("ERROR");
+      }
+    })
+
+  });
+
+
+  $("#delete_docs_btn").click(function(event) {
+      
+    var i =$("#docs_content input:checked").length;
+    if(i>1){
+      alert("You can choose only one doctor");
+    }
+    else if(i==0){
+      alert("Please, choose a doctor");
+    }
+    else{
+      var id = $("input:checked").val();
+
+
+      $.post('api/delete_doc', {id: id }, function(response) {
+    
+      });
+    }  
+
+  });
+
+  $("#delete_users_btn").click(function() {
+    var i =$("#users_content input:checked").length;
+    if(i>1){
+      alert("You can choose only single user");
+    }
+    else if(i==0){
+      alert("Please, choose user to delete");
+    }
+    else{
+      var id = $("input:checked").val();
+
+
+      $.post('api/delete_user', {id: id }, function(response) {
+    
+      });
+    }
+
+  });
+
+  $("#delete_news_btn").click(function(event) {
     var i =$("input:checked").length;
     if(i>1){
       alert("You can choose only one news");
@@ -50,26 +107,78 @@ $("document").ready(function() {
     else{
       var id = $("input:checked").val();
 
-      
+
       $.post('api/delete_news', {id: id }, function(response) {
           news_fill();
       });
     }  
   });
-/*FILLING DOCTOR TABLE WHEN DOCTORS BUTTON CLICKED*/
-  $("#doctor_btn").click(function() {
 
-          $("#content_container").html(
+
+  /*Filling Users Table and pane*/
+  $("#users_btn").click(function(event) {
+    
+    $("#users_content").html(
           '<div class="table-responsive">\
               <table class="table table-striped">\
                 <thead>\
                   <tr>\
                     <th>#</th>\
-                    <th>Title</th>\
-                    <th>Content</th>\
+                    <th>Name</th>\
+                    <th>Last name</th>\
+                    <th>Email</th>\
+                    <th>Phone No</th>\
+                    <th>Birth date</th>\
                     </tr>\
                 </thead>\
-                <tbody id="table_body">\
+                <tbody id="users_table_body">\
+                </tbody\
+              </table>\
+            </div>');
+
+    $.post('api/get_users', function(resp) {
+
+        $.each(resp, function(i, val) {
+
+        $("#users_table_body").append(
+          '<tr>\
+              <td>\
+                <div class="checkbox">\
+                  <label><input type="checkbox" value="'+val.passport+'"></label>\
+                </div>\
+              </td>\
+              <td>'+val.first_name+'</td>\
+              <td>'+val.last_name+'</td>\
+              <td>'+val.email+'</td>\
+              <td>'+val.phone+'</td>\
+              <td>'+val.birth_date+'</td>\
+            </tr>');
+      });
+
+    });
+
+  });
+
+  /*END OF Filling Users Table and pane*/
+
+
+/*FILLING DOCTOR TABLE WHEN DOCTORS BUTTON CLICKED*/
+  $("#doctors_btn").click(function() {
+      
+          $("#docs_content").html(
+          '<div class="table-responsive">\
+              <table class="table table-striped">\
+                <thead>\
+                  <tr>\
+                    <th>#</th>\
+                    <th>Name</th>\
+                    <th>Last name</th>\
+                    <th>Email</th>\
+                    <th>Phone No</th>\
+                    <th>Position</th>\
+                    </tr>\
+                </thead>\
+                <tbody id="doc_table_body">\
                 </tbody\
               </table>\
             </div>');
@@ -78,15 +187,18 @@ $("document").ready(function() {
       
       $.each(response, function(i, val) {
 
-        $("#table_body").append(
+        $("#doc_table_body").append(
           '<tr>\
               <td>\
                 <div class="checkbox">\
-                  <label><input type="checkbox" value="'+val.id+'"></label>\
+                  <label><input type="checkbox" value="'+val.DocID+'"></label>\
                 </div>\
               </td>\
-              <td>'+val.DocID+'</td>\
               <td>'+val.DocName+'</td>\
+              <td>'+val.DocSurname+'</td>\
+              <td>'+val.DocEmail+'</td>\
+              <td>'+val.DocPhone+'</td>\
+              <td>'+val.DocWorkField+'</td>\
             </tr>');
       });
 
@@ -131,5 +243,11 @@ $("document").ready(function() {
     });
 
   });
+
+
+  $("#add_news").click(function() {
+
+    $("#addNewsModal").modal('show')
+  })
 
 });  

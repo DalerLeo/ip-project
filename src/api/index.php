@@ -6,24 +6,169 @@ require '../../vendor/autoload.php';
 
 
 $app = new \Slim\App;
-$app->get('/hello/{name}', function (Request $request, Response $response) {
-    $name = $request->getAttribute('name');
-    $response->getBody()->write("Hello, $name");
 
-    return $response;
+
+$app->post('/queueing_patients', function(Request $request, Response $response){
+
+  $data = $request->getParsedBody();
+  $docID = filter_var($data['docID'], FILTER_SANITIZE_STRING);
+
+  require_once '../dbConfig.php';
+  try {
+
+   
+  $sql= "SELECT  Sec1, Sec2, Sec3, Sec4, Sec6, Sec7, Sec8 
+  FROM booking
+  WHERE DocID='$docID'";
+
+  $section = $db_con->prepare($sql);
+   
+  $section->execute();
+  $array = $section->fetch(PDO::FETCH_LAZY);
+
+  $i=0;
+
+  if($array['Sec1']!=NULL){
+    $tim[$i]=  $array['Sec1'];
+    $i++;
+  }if($array['Sec2']!=NULL){
+    $tim[$i]=  $array['Sec2'];
+    $i++;
+  }if($array['Sec3']!=NULL){
+    $tim[$i]=  $array['Sec3'];
+    $i++;
+  }if($array['Sec4']!=NULL){    
+    $tim[$i]=  $array['Sec4'];
+    $i++;
+  }if($array['Sec6']!=NULL){
+    $tim[$i]=  $array['Sec6'];
+    $i++;
+  }if($array['Sec7']!=NULL){
+    $tim[$i]=  $array['Sec7'];
+    $i++;
+  }if($array['Sec8']!=NULL){
+    $tim[$i] = $array['Sec8'];
+    $i++;
+  }
+
+  for($x=0;$x<$i;$x++){
+     $z="SELECT first_name , last_name 
+     FROM siteUsers 
+     WHERE passport= '" . $tim[$x]."'";
+      $row = $db_con->prepare($z);
+       
+      $row->execute();
+      $column = $section->fetch(PDO::FETCH_LAZY);
+
+  } 
+
+      print_r($column);
+      return $response->withJson($column);
+
+ }
+catch(PDOException $e)
+    {
+    echo "Connection failed: " . $e->getMessage();
+    }
+
 
 });
 
-$app->post('/booking', function(Request $request, Response $response){
+$app->post('/post_medical_history', function(Request $request, Response $response){
+
+  $data = $request->getParsedBody();
+
+  $user = filter_var($data['userID'], FILTER_SANITIZE_STRING);
+  $doc = filter_var($data['docID'], FILTER_SANITIZE_STRING);
+  $pres = filter_var($data['prescription'], FILTER_SANITIZE_STRING);
+  $med = filter_var($data['medicine'], FILTER_SANITIZE_STRING);
+  
+
+  try {
+
+    require_once "../dbConfig.php";
+
+  $date=date('Y-m-h');
+ 
+    $sql1= "SELECT DocWorkField
+    FROM doctors
+    WHERE DocID='$doc'";
+
+    $section = $db_con->prepare($sql1);
+     
+    $section->execute();
+    $array = $section->fetch(PDO::FETCH_LAZY);
+ 
+    $sql =  
+    "INSERT INTO illness_history (userID,DocID , Prescription, Medicine, Date, WorkField) 
+    VALUES ('$user', '$doc', '$pres','$med','$date',
+    '$array[DocWorkField]')";
+
+    $db_con->exec($sql); 
+
+  return $response->withJson(0);
+      }
+  catch(PDOException $e)
+      {
+      echo "Connection failed: " . $e->getMessage();
+      }
+    
+});
+
+$app->post('/get_medical_history', function(Request $request, Response $response){
+
+
+
+  $data = $request->getParsedBody();
+
+  $userID = filter_var($data['userID'], FILTER_SANITIZE_STRING);
 
   require_once "../dbConfig.php";
+  
+  try{
+
+
+    $db_con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql= "SELECT WorkField, Prescription, Medicine, Date FROM illness_history
+    WHERE userID ='$userID' ";
+
+    $section = $db_con->prepare($sql);
+    $section->execute(); 
+    $sl = $section->fetchAll();
+
+    return $response->withJson($sl);
+
+}
+catch(PDOException $e)
+    {
+    echo "Connection failed: " . $e->getMessage();
+    }
+
+});
+
+
+$app->post('/booking', function(Request $request, Response $response){
+
+  
 
   $data = $request->getParsedBody();
 
   $userID = filter_var($data['user'], FILTER_SANITIZE_STRING);
   $docID = filter_var($data['doctor'], FILTER_SANITIZE_STRING);
-  $secT = filter_var($data['time'], FILTER_SANITIZE_STRING);
-  $date = filter_var($data['date'], FILTER_SANITIZE_STRING);
+  $time = filter_var($data['time'], FILTER_SANITIZE_STRING);
+  $date = filter_var($data['day'], FILTER_SANITIZE_STRING);
+echo $time;
+echo $docID;
+echo $userID;
+$convert= array("9:00"=>"Sec1", "10:00"=>"Sec2", "11:00"=>"Sec3",
+ "12:00"=>"Sec4", "14:00"=>"Sec6", "15:00"=>"Sec7","16:00"=>"Sec8");
+
+
+$secT = $convert[$time];
+
+printf($secT);
+
+require_once "../dbConfig.php";
 
   try{
   $sql= " 
@@ -31,45 +176,25 @@ $app->post('/booking', function(Request $request, Response $response){
   FROM booking 
   WHERE DocID = '$docID' ";
 
-  $section = $conn->prepare($sql);
+  $section = $db_con->prepare($sql);
   $section->execute(); 
-  $row = $section->fetchAll();
+  $row = $section->fetch(PDO::FETCH_LAZY);
       
 
    
-   if(is_null($row[0][$secT])){
+   if(is_null($row[$secT])){
           $update = "UPDATE booking  
           SET $secT = '$userID' 
           WHERE DocID = '$docID' AND Date = '$date'";
 
-          $conn->exec($update);
-          echo "\n booked!!!!!";
+          $db_con->exec($update);
+          echo "\n booked";
    }else{
       echo "\n Already reserved!!!!";
    }
    
+/*"*/
 
-   if(date("h,a")=="05,pm"){
-          $selDoc="SELECT DocID FROM doctors ";
-          $section = $conn->prepare($selDoc);
-          $section->execute(); 
-          $SecValues = $section->fetchAll();
-          $c=0;
-          foreach ($SecValues as $key) { 
-              $c++;
-          }
-          for($x=0;$x<$c;$x++){
-              $ad=strtotime("+7 day");
-              $incr = "INSERT INTO booking ( DocID , Date) 
-              VALUES ($SecValues[$x]['DocID'],
-              date('Y-m-d' , $ad))";
-              $conn->exec($incr);
-          }
-   }
-
-
-   
-  echo "Connected Succesfully!!!";
       }
   catch(PDOException $e)
       {
@@ -103,25 +228,25 @@ $app->post('/get_free_time', function(Request $request, Response $response){
      $tim=array();
      
       if($row['Sec1']==NULL){
-        $tim[$i]= " 9:00 - 10:00";
+        $tim[$i]= " 9:00";
         $i++;
       }if($row['Sec2']==NULL){
-        $tim[$i]= "10:00 - 11:00";
+        $tim[$i]= "10:00";
         $i++;
       }if($row['Sec3']==NULL){
-        $tim[$i]= "11:00 - 12:00";
+        $tim[$i]= "11:00";
         $i++;
       }if($row['Sec4']==NULL){
-        $tim[$i]= "12:00 - 13:00";
+        $tim[$i]= "12:00";
         $i++;
       }if($row['Sec6']==NULL){
-        $tim[$i]= "14:00 - 15:00";
+        $tim[$i]= "14:00";
         $i++;
       }if($row['Sec7']==NULL){
-        $tim[$i]= "15:00 - 16:00";
+        $tim[$i]= "15:00";
         $i++;
       }if($row['Sec8']==NULL){
-        $tim[$i]= "16:00 - 17:00";
+        $tim[$i]= "16:00";
         $i++;
       }
 
@@ -133,6 +258,28 @@ $app->post('/get_free_time', function(Request $request, Response $response){
         }
 
   });
+
+$app->post('/get_users', function(Request $request, Response $response){
+
+  require_once "../dbConfig.php";
+  try {
+
+$query = "SELECT first_name, email, last_name, phone, birth_date, passport, job_study FROM siteUsers";
+        $stmt = $db_con->prepare($query);
+        $stmt->execute();
+        $users_row = $stmt->fetchAll();
+        
+
+
+        return $response->withJson($users_row);
+    }
+    catch (PDOException $except) {
+        echo  $except->getMessage();
+    }
+    $connect = null;
+
+
+});
 
 $app->post('/get_doctors', function(Request $request, Response $response){
 
@@ -153,6 +300,46 @@ $app->post('/get_doctors', function(Request $request, Response $response){
     }
     $connect = null;
 
+
+});
+
+$app->post('/delete_user', function(Request $request, Response $response){
+
+  $data = $request->getParsedBody();
+  $id = filter_var($data['id'], FILTER_SANITIZE_STRING);
+
+  require_once "../dbConfig.php";
+
+  try {
+    
+      $query = "DELETE FROM siteUsers WHERE passport= '$id'";
+
+      $db_con->exec($query);
+      return $response->withJson(0);
+
+  } catch (PDOException $e) {
+      echo $query . $e->getMessage();
+  }
+
+});
+
+$app->post('/delete_doc', function(Request $request, Response $response){
+
+  $data = $request->getParsedBody();
+  $id = filter_var($data['id'], FILTER_SANITIZE_STRING);
+
+  require_once "../dbConfig.php";
+
+  try {
+    
+      $query = "DELETE FROM doctors WHERE DocID= '$id'";
+
+      $db_con->exec($query);
+      return $response->withJson(0);
+
+  } catch (PDOException $e) {
+      echo $query . $e->getMessage();
+  }
 
 });
 
@@ -200,24 +387,29 @@ $app->post('/save_news', function(Request $request, Response $response){
   }
 
 });
-/*Checking wheather user with same passpoert No has been registered*/
+/*Checking wheather user with same passport No has been registered*/
 $app->post('/passport', function (Request $request, Response $response){
 
     $data = $request->getParsedBody();
-    $resp = [];
-    $resp['passport'] = filter_var($data['passport'], FILTER_SANITIZE_STRING);
+    $status = filter_var($data['status'], FILTER_SANITIZE_STRING);
+    $passport = filter_var($data['passport'], FILTER_SANITIZE_STRING);
     
-
     require_once "../dbConfig.php";
 
     try
       { 
 
-      $passport = $db_con->quote($resp['passport']);
+      $passport = $db_con->quote($passport);
         
-      $stmt = $db_con->prepare("SELECT passport FROM siteUsers WHERE passport=$passport");
+      if(!$status){  
+        $stmt = $db_con->prepare("SELECT passport FROM siteUsers WHERE passport=$passport");
+      }
+      else{
+          $stmt = $db_con->prepare("SELECT DocID FROM doctors WHERE DocID=$passport"); 
+      }
       $stmt->execute();
       
+
       $data = $stmt->fetchAll();
       if(empty($data)){
         return $response->withJson(0);
@@ -246,8 +438,9 @@ $app->post('/signup', function(Request $request, Response $response){
   $resp['job_study'] = filter_var($data['job_study'], FILTER_SANITIZE_STRING);
   $resp['password'] = filter_var($data['password'], FILTER_SANITIZE_STRING);
   $resp['status'] = filter_var($data['status'], FILTER_SANITIZE_STRING);
+  $resp['position'] = filter_var($data['position'], FILTER_SANITIZE_STRING);
 
-  print(resp['status']);
+
   require_once "../dbConfig.php";
 
   try {
@@ -261,10 +454,24 @@ $app->post('/signup', function(Request $request, Response $response){
         $job_study = $db_con->quote($resp['job_study']);
         $password = $db_con->quote($resp['password']);
 
-/*        $query = "INSERT INTO siteUsers (first_name, last_name, passport, birth_date, email, phone, job_study, password)
+
+        if($resp['status']){
+          $position = $db_con->quote($resp['position']);
+
+                  $query = "INSERT INTO doctors (DocID, DocName, DocSurname, DocEmail, DocPassword, DocPhone, DocBirth, DocWorkField)
+                 VALUES ($passport, $first_name, $last_name, $email, $password, $phone, $birth_date, $position) ";
+
+        }
+        else if(!$resp['status']){
+
+                    $query = "INSERT INTO siteUsers (first_name, last_name, passport, birth_date, email, phone, job_study, password)
                  VALUES ($first_name, $last_name, $passport, $birth_date, $email, $phone, $job_study, $password) ";
+
+        }
+
+
         
-        $db_con->exec($query);*/
+        $db_con->exec($query);
         return $response->withJson(0);
 
     }
@@ -274,59 +481,6 @@ $app->post('/signup', function(Request $request, Response $response){
     $connect = null;
 });
 
-
-$app->post('/logout', function(Request $request, Response $response){
-
-     session_start();
-     unset($_SESSION['user_session']);
-     
-     if(session_destroy())
-     {
-        return $response->withJson(1);
-     }
-     else{
-        return $response->withJson(0);
-     }
-
-});
-
-$app->post('/signin', function(Request $request, Response $response){
-
-	$data = $request->getParsedBody();
-
-	if(isset($data['user_email']))
- {
-  $user_email = trim($data['user_email']);
-  $user_password = trim($data['password']);
-  
-  $password = md5($user_password);
-  
-  try
-  { 
-  
-  require_once "../dbConfig.php";
-   $stmt = $db_con->prepare("SELECT * FROM siteUsers WHERE email=:email");
-   $stmt->execute(array(":email"=>$user_email));
-   $row = $stmt->fetch(PDO::FETCH_ASSOC);
-   
-   if($row['password']==$user_password){
-    
-    echo "ko"; // log in
-    $_SESSION['user_session'] = $row['userID'];
-   }
-   else{
-    
-    echo "email or password does not exist."; // wrong details 
-   }
-    
-  }
-  catch(PDOException $e){
-   echo $e->getMessage();
-  }
- }
-
-
-});
 
 $app->get('/news', function(Request $request, Response $response){
 
